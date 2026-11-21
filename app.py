@@ -1,36 +1,39 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import pymysql
+import os
+import ssl
 from datetime import date
 
 app = Flask(__name__)
-app.secret_key = 'stayease_secret_key'
-
-# MySQL Database Configuration (Update these details as per your setup)
-DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',
-    'database': 'stayease_db',
-    'cursorclass': pymysql.cursors.DictCursor
-}
+app.secret_key = os.environ.get('SECRET_KEY', 'stayease_secret_key')
 
 def get_db_connection():
-    return pymysql.connect(**DB_CONFIG)
+    config = {
+        'host': os.environ.get('DB_HOST', 'localhost'),
+        'port': int(os.environ.get('DB_PORT', 3306)),
+        'user': os.environ.get('DB_USER', 'root'),
+        'password': os.environ.get('DB_PASSWORD', ''),
+        'database': os.environ.get('DB_NAME', 'stayease_db'),
+        'cursorclass': pymysql.cursors.DictCursor
+    }
+    if os.environ.get('DB_SSL', 'false').lower() == 'true':
+        ssl_ctx = ssl.create_default_context()
+        ssl_ctx.check_hostname = False
+        ssl_ctx.verify_mode = ssl.CERT_NONE
+        config['ssl'] = ssl_ctx
+    return pymysql.connect(**config)
 
 @app.route('/')
 def index():
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            # Fetch all rooms
             cursor.execute("SELECT * FROM rooms ORDER BY room_number ASC")
             rooms = cursor.fetchall()
 
-            # Fetch bookings using SQL View
             cursor.execute("SELECT * FROM active_bookings_view")
             bookings = cursor.fetchall()
 
-            # Fetch dashboard stats using Aggregate Functions
             cursor.execute("""
                 SELECT 
                     COUNT(*) AS total_rooms,
@@ -65,7 +68,6 @@ def book_room():
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            # Calls Stored Procedure (handles Transaction, Trigger & Bill Calculation)
             cursor.callproc('sp_create_booking', (full_name, phone, id_proof, room_id, check_in, nights))
         conn.commit()
         flash('Room booked successfully!', 'success')
@@ -82,7 +84,6 @@ def checkout_booking(booking_id):
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
-            # Fires 'after_booking_checkout' Trigger automatically
             cursor.execute(
                 "UPDATE bookings SET booking_status = 'Checked-Out' WHERE booking_id = %s",
                 (booking_id,)
