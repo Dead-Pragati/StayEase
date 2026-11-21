@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StayEase | Hotel Room Reservation System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #13120F;
+            --mustard: #DF9B1D;
+            --sage: #B7D3C2;
+            --sage-light: #CDE2D5;
+            --cream: #F6ECE8;
+            --cream-dark: #EADBD4;
+            --btn-green: #73A967;
+            --btn-green-hover: #629656;
+            --coral: #E06D53;
+            --white: #FFFDFB;
+            --border: 2px solid #13120F;
+            --border-thin: 1.5px solid #13120F;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #6CA568;
+            background-image: radial-gradient(rgba(19, 18, 15, 0.08) 1px, transparent 0);
+            background-size: 16px 16px;
+            color: var(--ink);
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 20px;
+            line-height: 1.45;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Main Framed App Container */
+        .app-frame {
+            max-width: 1320px;
+            margin: 0 auto;
+            background-color: var(--cream);
+            border: var(--border);
+            box-shadow: 8px 8px 0px var(--ink);
+            overflow: hidden;
+        }
+
+        /* Top Navigation Bar */
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 24px;
+            background-color: var(--cream);
+            border-bottom: var(--border);
+            flex-wrap: wrap;
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-badge {
+            background-color: var(--ink);
+            color: var(--cream);
+            font-weight: 800;
+            font-size: 1.15rem;
+            letter-spacing: -0.04em;
+            padding: 6px 14px;
+            border: var(--border-thin);
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-dot {
+            width: 9px;
+            height: 9px;
+            background-color: var(--mustard);
+            display: inline-block;
+        }
+
+        .nav-search {
+            display: flex;
+            align-items: center;
+            background-color: var(--sage-light);
+            border: var(--border-thin);
+            padding: 6px 12px;
+            min-width: 260px;
+            flex: 1;
+            max-width: 360px;
+        }
+
+        .nav-search svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .nav-search input {
+            border: none;
+            background: transparent;
+            outline: none;
+            width: 100%;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .nav-search input::placeholder {
+            color: rgba(19, 18, 15, 0.65);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink);
+            font-weight: 700;
+            font-size: 0.88rem;
+            transition: opacity 0.15s;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .btn-brutal {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 9px 18px;
+            font-family: inherit;
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--ink);
+            background-color: var(--btn-green);
+            border: var(--border-thin);
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.15s;
+        }
+
+        .btn-brutal:hover {
+            background-color: var(--btn-green-hover);
+            transform: translate(-2px, -2px);
+            box-shadow: 3px 3px 0px var(--ink);
+        }
+
+        .btn-brutal:active {
+            transform: translate(0, 0);
+            box-shadow: none;
+        }
+
+        .btn-dark {
+            background-color: var(--ink);
+            color: var(--cream);
+        }
+
+        .btn-dark:hover {
+            background-color: #272520;
+            color: var(--white);
+        }
+
+        .btn-mustard {
+            background-color: var(--mustard);
+            color: var(--ink);
+        }
+
+        .btn-coral {
+            background-color: var(--coral);
+            color: var(--ink);
+        }
+
+        .btn-sm {
+            padding: 5px 11px;
+            font-size: 0.78rem;
+        }
+
+        /* Flash Alert Strip */
+        .flash-wrapper {
+            padding: 12px 24px 0 24px;
+            background-color: var(--cream);
+        }
+
+        .flash-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 16px;
+            border: var(--border-thin);
+            font-weight: 700;
+            font-size: 0.88rem;
+            margin-bottom: 10px;
+            box-shadow: 3px 3px 0px var(--ink);
+        }
+
+        .flash-success {
+            background-color: var(--btn-green);
+        }
+
+        .flash-info {
+            background-color: var(--sage);
+        }
+
+        .flash-warning {
+            background-color: var(--mustard);
+        }
+
+        .flash-danger {
+            background-color: var(--coral);
+        }
+
+        .flash-close {
+            background: none;
+            border: var(--border-thin);
+            background-color: var(--cream);
+            font-weight: 800;
+            padding: 2px 8px;
+            cursor: pointer;
+        }
+
+        /* Split Hero Section */
+        .hero-split {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            border-bottom: var(--border);
+        }
+
+        .hero-left {
+            background-color: var(--mustard);
+            padding: 38px 36px;
+            border-right: var(--border);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .hero-arc {
+            width: 54px;
+            height: 54px;
+            margin-bottom: 10px;
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 3.6vw, 3.1rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.035em;
+            color: var(--ink);
+            max-width: 15ch;
+            margin-bottom: 14px;
+        }
+
+        .hero-desc {
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: rgba(19, 18, 15, 0.85);
+            max-width: 46ch;
+            margin-bottom: 24px;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .hero-right {
+            background-color: var(--sage);
+            background-image:
+                linear-gradient(to right, rgba(19, 18, 15, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(19, 18, 15, 0.08) 1px, transparent 1px);
+            background-size: 36px 36px;
+            padding: 32px 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .stat-box {
+            background-color: var(--cream);
+            border: var(--border-thin);
+            padding: 16px 18px;
+            box-shadow: 4px 4px 0px var(--ink);
+            position: relative;
+        }
+
+        .stat-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 2px 8px;
+            border: 1px solid var(--ink);
+            margin-bottom: 10px;
+        }
+
+        .tag-neutral {
+            background-color: var(--cream-dark);
+        }
+
+        .tag-green {
+            background-color: var(--btn-green);
+        }
+
+        .tag-coral {
+            background-color: var(--coral);
+        }
+
+        .tag-mustard {
+            background-color: var(--mustard);
+        }
+
+        .stat-num {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .stat-sub {
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: rgba(19, 18, 15, 0.7);
+            margin-top: 4px;
+        }
+
+        /* Dark Ink Divider Banner */
+        .dark-banner {
+            background-color: var(--ink);
+            color: var(--white);
+            padding: 28px 24px;
+            text-align: center;
+            border-bottom: var(--border);
+        }
+
+        .dark-banner h2 {
+            font-size: clamp(1.35rem, 2.3vw, 1.85rem);
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin-bottom: 6px;
+        }
+
+        .dark-banner p {
+            font-size: 0.85rem;
+            color: rgba(246, 236, 232, 0.78);
+            max-width: 64ch;
+            margin: 0 auto;
+        }
+
+        /* Room Showcase Section (Featured Artists Style) */
+        .rooms-section {
+            background-color: var(--sage);
+            padding: 32px 28px;
+            border-bottom: var(--border);
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        .pill-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            padding: 6px 14px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            background-color: var(--cream);
+            color: var(--ink);
+            border: var(--border-thin);
+            cursor: pointer;
+        }
+
+        .filter-pill.active {
+            background-color: var(--ink);
+            color: var(--cream);
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 16px;
+        }
+
+        .room-card {
+            background-color: var(--cream);
+            border: var(--border-thin);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.14s ease, box-shadow 0.14s ease;
+        }
+
+        .room-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 5px 5px 0px var(--ink);
+        }
+
+        .room-visual {
+            height: 86px;
+            border: var(--border-thin);
+            margin-bottom: 14px;
+            padding: 12px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-visual.cat-Standard {
+            background-color: var(--cream-dark);
+            background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(19, 18, 15, 0.05) 10px, rgba(19, 18, 15, 0.05) 20px);
+        }
+
+        .room-visual.cat-Deluxe {
+            background-color: var(--mustard);
+            background-image: radial-gradient(rgba(19, 18, 15, 0.14) 1.5px, transparent 0);
+            background-size: 12px 12px;
+        }
+
+        .room-visual.cat-Suite {
+            background-color: var(--ink);
+            color: var(--cream);
+        }
+
+        .room-number-big {
+            font-size: 1.55rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .room-status-pill {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border: 1.5px solid var(--ink);
+            color: var(--ink);
+        }
+
+        .status-Available {
+            background-color: var(--btn-green);
+        }
+
+        .status-Booked {
+            background-color: var(--coral);
+        }
+
+        .room-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .category-tag {
+            font-size: 0.74rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border: 1px solid var(--ink);
+        }
+
+        .cat-tag-Standard {
+            background-color: #E4D7CF;
+        }
+
+        .cat-tag-Deluxe {
+            background-color: #F4C96B;
+        }
+
+        .cat-tag-Suite {
+            background-color: #9CC5AE;
+        }
+
+        .room-price {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .room-price span {
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: rgba(19, 18, 15, 0.65);
+        }
+
+        /* Main Operations Split: Forms (Left) + Reservations Ledger (Right) */
+        .workspace-split {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            background-color: var(--cream);
+        }
+
+        .forms-column {
+            border-right: var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-panel {
+            padding: 24px;
+            border-bottom: var(--border);
+        }
+
+        .form-panel:last-child {
+            border-bottom: none;
+            flex: 1;
+        }
+
+        .form-panel.mustard-bg {
+            background-color: #F2D296;
+        }
+
+        .panel-heading {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
+        }
+
+        .panel-sub {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(19, 18, 15, 0.72);
+            margin-bottom: 16px;
+        }
+
+        .field-group {
+            margin-bottom: 13px;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 5px;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 9px 12px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--ink);
+            background-color: var(--white);
+            border: var(--border-thin);
+            outline: none;
+        }
+
+        .field-input:focus {
+            background-color: #FFF9EE;
+            box-shadow: 3px 3px 0px var(--ink);
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1.35fr 0.65fr;
+            gap: 10px;
+        }
+
+        .estimate-box {
+            background-color: var(--cream);
+            border: var(--border-thin);
+            padding: 9px 12px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        /* Ledger Column (Inspired by "All Artists" Table) */
+        .ledger-column {
+            padding: 24px 28px;
+            background-color: var(--cream);
+            min-width: 0;
+        }
+
+        .ledger-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .ledger-search-bar {
+            display: flex;
+            align-items: stretch;
+            flex: 1;
+            min-width: 240px;
+            max-width: 440px;
+        }
+
+        .ledger-search-bar input {
+            flex: 1;
+            padding: 8px 12px;
+            border: var(--border-thin);
+            border-right: none;
+            background-color: var(--white);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .ledger-search-bar span {
+            padding: 8px 14px;
+            background-color: var(--btn-green);
+            border: var(--border-thin);
+            font-size: 0.82rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+        }
+
+        .table-frame {
+            border: var(--border-thin);
+            background-color: var(--white);
+            overflow-x: auto;
+        }
+
+        table.editorial-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        table.editorial-table thead {
+            background-color: var(--cream-dark);
+            border-bottom: var(--border-thin);
+        }
+
+        table.editorial-table th {
+            padding: 11px 14px;
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--coral);
+            white-space: nowrap;
+        }
+
+        table.editorial-table th:first-child {
+            color: var(--ink);
+        }
+
+        table.editorial-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(19, 18, 15, 0.18);
+            font-size: 0.88rem;
+            vertical-align: middle;
+        }
+
+        table.editorial-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        table.editorial-table tbody tr:hover {
+            background-color: #FAF3EF;
+        }
+
+        .guest-name {
+            font-weight: 800;
+            color: var(--ink);
+        }
+
+        .guest-sub {
+            font-size: 0.76rem;
+            color: rgba(19, 18, 15, 0.68);
+            margin-top: 2px;
+        }
+
+        .status-chip {
+            display: inline-block;
+            padding: 3px 9px;
+            font-size: 0.74rem;
+            font-weight: 800;
+            border: 1.5px solid var(--ink);
+        }
+
+        .chip-active {
+            background-color: var(--mustard);
+        }
+
+        .chip-checkedout {
+            background-color: var(--sage);
+        }
+
+        .action-cluster {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+        }
+
+        /* Footer Strip */
+        .footer-bar {
+            background-color: var(--ink);
+            color: var(--cream);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
+            font-weight: 600;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* Responsive Adjustments for Tablet & Mobile */
+        @media (max-width: 980px) {
+            body {
+                padding: 10px;
+            }
+
+            .hero-split {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-left {
+                border-right: none;
+                border-bottom: var(--border);
+            }
+
+            .workspace-split {
+                grid-template-columns: 1fr;
+            }
+
+            .forms-column {
+                border-right: none;
+                border-bottom: var(--border);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .nav-links {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .hero-left {
+                padding: 26px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-frame">
+
+        <!-- Top Navigation -->
+        <header class="topbar">
+            <div class="brand-group">
+                <div class="brand-badge">
+                    <span class="brand-dot"></span>
+                    StayEase
+                </div>
+            </div>
+
+            <div class="nav-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="globalSearchInput" placeholder="Search room number, guest or ID...">
+            </div>
+
+            <nav class="nav-links">
+                <a href="#rooms-inventory">Rooms</a>
+                <a href="#reservations-ledger">Reservations</a>
+                <a href="#add-room-panel">Add Room</a>
+            </nav>
+
+            <a href="#booking-form-panel" class="btn-brutal">New Booking</a>
+        </header>
+
+        <!-- Flash Notifications -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-wrapper">
+            {% for category, message in messages %}
+            <div class="flash-banner flash-{{ category }}">
+                <span>{{ message }}</span>
+                <button type="button" class="flash-close" onclick="this.parentElement.remove()">X</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Hero Split Banner -->
+        <section class="hero-split">
+            <div class="hero-left">
+                <div>
+                    <!-- Minimal Geometric Arch Accent -->
+                    <svg class="hero-arc" viewBox="0 0 64 64" fill="none">
+                        <path d="M12 52C12 29.9086 29.9086 12 52 12" stroke="#13120F" stroke-width="11"
+                            stroke-linecap="butt" />
+                        <path d="M12 52C12 29.9086 29.9086 12 52 12" stroke="#E06D53" stroke-width="7"
+                            stroke-linecap="butt" />
+                        <path d="M23 52C23 35.9837 35.9837 23 52 23" stroke="#13120F" stroke-width="11"
+                            stroke-linecap="butt" />
+                        <path d="M23 52C23 35.9837 35.9837 23 52 23" stroke="#B7D3C2" stroke-width="7"
+                            stroke-linecap="butt" />
+                    </svg>
+
+                    <h1 class="hero-title">Manage hotel rooms &amp; guest stays in one place.</h1>
+                    <p class="hero-desc">
+                        Real-time room availability, automated check-in/check-out triggers, and instant billing backed
+                        by a BCNF-normalized MySQL database.
+                    </p>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="#booking-form-panel" class="btn-brutal">Book a Room</a>
+                    <a href="#rooms-inventory" class="btn-brutal btn-dark">Explore Inventory</a>
+                </div>
+            </div>
+
+            <div class="hero-right">
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <span class="stat-tag tag-neutral">Inventory</span>
+                        <div class="stat-num mono">{{ stats.total_rooms }}</div>
+                        <div class="stat-sub">Total Configured Rooms</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <span class="stat-tag tag-green">Ready</span>
+                        <div class="stat-num mono">{{ stats.available_rooms }}</div>
+                        <div class="stat-sub">Available for Check-In</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <span class="stat-tag tag-coral">Occupied</span>
+                        <div class="stat-num mono">{{ stats.booked_rooms }}</div>
+                        <div class="stat-sub">Currently Booked</div>
+                    </div>
+
+                    <div class="stat-box">
+                        <span class="stat-tag tag-mustard">Revenue</span>
+                        <div class="stat-num mono">₹{{ "%.0f"|format(stats.total_revenue) }}</div>
+                        <div class="stat-sub">Cumulative Booking Value</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dark Ink Strip -->
+        <div class="dark-banner">
+            <h2>All your rooms, guests &amp; active reservations in one unified ledger</h2>
+            <p>Every reservation invokes a transactional stored procedure while database triggers synchronize room
+                occupancy automatically.</p>
+        </div>
+
+        <!-- Room Inventory Grid -->
+        <section class="rooms-section" id="rooms-inventory">
+            <div class="section-head">
+                <h2 class="section-title">Room Inventory ({{ rooms|length }})</h2>
+                <div class="pill-group" id="roomFilterPills">
+                    <button type="button" class="filter-pill active" data-room-filter="ALL">All Rooms</button>
+                    <button type="button" class="filter-pill" data-room-filter="Available">Available</button>
+                    <button type="button" class="filter-pill" data-room-filter="Booked">Booked</button>
+                </div>
+            </div>
+
+            <div class="rooms-grid" id="roomsGrid">
+                {% for room in rooms %}
+                <div class="room-card" data-status="{{ room.status }}"
+                    data-search="{{ room.room_number }} {{ room.room_type }} {{ room.status }}">
+                    <div>
+                        <div class="room-visual cat-{{ room.room_type }}">
+                            <span class="room-number-big mono">#{{ room.room_number }}</span>
+                            <span class="room-status-pill status-{{ room.status }}">{{ room.status }}</span>
+                        </div>
+                        <div class="room-meta-row">
+                            <span class="category-tag cat-tag-{{ room.room_type }}">{{ room.room_type }}</span>
+                            <span class="mono" style="font-size: 0.75rem; font-weight: 700;">ID: {{ room.room_id
+                                }}</span>
+                        </div>
+                        <div class="room-price mono">
+                            ₹{{ "%.2f"|format(room.price_per_night) }} <span>/ night</span>
+                        </div>
+                    </div>
+
+                    {% if room.status == 'Available' %}
+                    <button type="button" class="btn-brutal btn-sm" style="width: 100%;"
+                        onclick="selectRoomForBooking('{{ room.room_id }}')">
+                        Select for Booking
+                    </button>
+                    {% else %}
+                    <button type="button" class="btn-brutal btn-sm btn-coral"
+                        style="width: 100%; opacity: 0.85; cursor: not-allowed;" disabled>
+                        Currently Occupied
+                    </button>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div
+                    style="grid-column: 1 / -1; background: var(--cream); border: var(--border-thin); padding: 20px; text-align: center; font-weight: 700;">
+                    No rooms configured yet. Add a room using the form below.
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Main Workspace: Forms + Reservations Table -->
+        <section class="workspace-split">
+
+            <!-- Left Forms Column -->
+            <aside class="forms-column">
+
+                <!-- Book Room Form -->
+                <div class="form-panel mustard-bg" id="booking-form-panel">
+                    <h3 class="panel-heading">New Room Reservation</h3>
+                    <p class="panel-sub">Executes <span class="mono">sp_create_booking</span> &amp; lock trigger</p>
+
+                    <form action="{{ url_for('book_room') }}" method="POST">
+                        <div class="field-group">
+                            <label class="field-label">Guest Full Name</label>
+                            <input type="text" name="full_name" class="field-input" placeholder="e.g. Aarav Kulkarni"
+                                required>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label">Phone Number</label>
+                            <input type="text" name="phone" class="field-input" placeholder="e.g. 9876543210" required>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label">ID Proof Number</label>
+                            <input type="text" name="id_proof" class="field-input" placeholder="e.g. AADHAR-4590"
+                                required>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label">Available Room</label>
+                            <select name="room_id" id="roomSelectDropdown" class="field-input" required
+                                onchange="updateEstimate()">
+                                <option value="" data-price="0" disabled selected>Choose an available room...</option>
+                                {% for room in rooms %}
+                                {% if room.status == 'Available' %}
+                                <option value="{{ room.room_id }}" data-price="{{ room.price_per_night }}">
+                                    Room {{ room.room_number }} ({{ room.room_type }}) — ₹{{
+                                    "%.0f"|format(room.price_per_night) }}/night
+                                </option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="field-row field-group">
+                            <div>
+                                <label class="field-label">Check-In Date</label>
+                                <input type="date" name="check_in" class="field-input" value="{{ today }}" required>
+                            </div>
+                            <div>
+                                <label class="field-label">Nights</label>
+                                <input type="number" name="nights" id="nightsInput" class="field-input" min="1"
+                                    value="1" required oninput="updateEstimate()">
+                            </div>
+                        </div>
+
+                        <div class="estimate-box">
+                            <span>Estimated Total Bill</span>
+                            <span class="mono" id="estimatedTotalText">₹0.00</span>
+                        </div>
+
+                        <button type="submit" class="btn-brutal btn-dark" style="width: 100%;">Confirm
+                            Reservation</button>
+                    </form>
+                </div>
+
+                <!-- Add New Room Form -->
+                <div class="form-panel" id="add-room-panel">
+                    <h3 class="panel-heading">Add New Room</h3>
+                    <p class="panel-sub">Insert new inventory record into <span class="mono">rooms</span></p>
+
+                    <form action="{{ url_for('add_room') }}" method="POST">
+                        <div class="field-group">
+                            <label class="field-label">Room Number</label>
+                            <input type="text" name="room_number" class="field-input" placeholder="e.g. 302" required>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label">Category</label>
+                            <select name="room_type" class="field-input" required>
+                                <option value="Standard">Standard</option>
+                                <option value="Deluxe">Deluxe</option>
+                                <option value="Suite">Suite</option>
+                            </select>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="field-label">Tariff Per Night (₹)</label>
+                            <input type="number" step="0.01" min="1" name="price_per_night" class="field-input"
+                                placeholder="e.g. 2500" required>
+                        </div>
+
+                        <button type="submit" class="btn-brutal" style="width: 100%;">Add Room to Inventory</button>
+                    </form>
+                </div>
+
+            </aside>
+
+            <!-- Right Reservations Ledger Column -->
+            <div class="ledger-column" id="reservations-ledger">
+                <div class="section-head">
+                    <h2 class="section-title">Reservations Ledger ({{ bookings|length }})</h2>
+                    <div class="pill-group" id="bookingFilterPills">
+                        <button type="button" class="filter-pill active" data-booking-filter="ALL">All</button>
+                        <button type="button" class="filter-pill" data-booking-filter="Active">Active</button>
+                        <button type="button" class="filter-pill" data-booking-filter="Checked-Out">Checked-Out</button>
+                    </div>
+                </div>
+
+                <div class="ledger-toolbar">
+                    <div class="ledger-search-bar">
+                        <input type="text" id="ledgerSearchInput"
+                            placeholder="Filter by guest name, phone, ID or room...">
+                        <span>Search</span>
+                    </div>
+                </div>
+
+                <div class="table-frame">
+                    <table class="editorial-table" id="bookingsTable">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Guest Details</th>
+                                <th>Room</th>
+                                <th>Check-In &amp; Stay</th>
+                                <th>Total Bill</th>
+                                <th>Status</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in bookings %}
+                            <tr data-booking-status="{{ b.booking_status }}"
+                                data-search="{{ b.booking_id }} {{ b.full_name }} {{ b.phone }} {{ b.id_proof }} {{ b.room_number }} {{ b.room_type }}">
+                                <td class="mono" style="font-weight: 700;">#{{ b.booking_id }}</td>
+                                <td>
+                                    <div class="guest-name">{{ b.full_name }}</div>
+                                    <div class="guest-sub mono">{{ b.phone }} | {{ b.id_proof }}</div>
+                                </td>
+                                <td>
+                                    <div class="mono" style="font-weight: 800;">Room {{ b.room_number }}</div>
+                                    <span class="category-tag cat-tag-{{ b.room_type }}">{{ b.room_type }}</span>
+                                </td>
+                                <td>
+                                    <div class="mono" style="font-weight: 600;">{{ b.check_in }}</div>
+                                    <div class="guest-sub">{{ b.nights }} Night(s)</div>
+                                </td>
+                                <td class="mono" style="font-weight: 800;">₹{{ "%.2f"|format(b.total_amount) }}</td>
+                                <td>
+                                    {% if b.booking_status == 'Active' %}
+                                    <span class="status-chip chip-active">Active</span>
+                                    {% else %}
+                                    <span class="status-chip chip-checkedout">Checked-Out</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="action-cluster">
+                                        {% if b.booking_status == 'Active' %}
+                                        <form action="{{ url_for('checkout_booking', booking_id=b.booking_id) }}"
+                                            method="POST">
+                                            <button type="submit" class="btn-brutal btn-sm">Check-Out</button>
+                                        </form>
+                                        {% endif %}
+                                        <form action="{{ url_for('delete_booking', booking_id=b.booking_id) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Delete this booking record permanently?');">
+                                            <button type="submit" class="btn-brutal btn-sm btn-coral">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 28px; font-weight: 700;">
+                                    No reservation records found in active_bookings_view.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Bottom Footer Strip -->
+        <footer class="footer-bar">
+            <span>StayEase — Hotel Room Reservation System (DBMS Mini Project)</span>
+            <span class="mono">Stack: Flask + MySQL (BCNF, Views, Triggers, Stored Procedures)</span>
+        </footer>
+
+    </div>
+
+    <script>
+        // Auto-select room from Room Inventory grid & scroll to form
+        function selectRoomForBooking(roomId) {
+            const dropdown = document.getElementById('roomSelectDropdown');
+            dropdown.value = roomId;
+            updateEstimate();
+            document.getElementById('booking-form-panel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Live Bill Calculation Preview
+        function updateEstimate() {
+            const dropdown = document.getElementById('roomSelectDropdown');
+            const nightsInput = document.getElementById('nightsInput');
+            const output = document.getElementById('estimatedTotalText');
+
+            const selectedOption = dropdown.options[dropdown.selectedIndex];
+            const price = selectedOption ? parseFloat(selectedOption.getAttribute('data-price') || 0) : 0;
+            const nights = Math.max(1, parseInt(nightsInput.value || 1, 10));
+
+            const total = price * nights;
+            output.textContent = '₹' + total.toFixed(2);
+        }
+
+        // Filter Room Inventory Cards
+        let activeRoomFilter = 'ALL';
+        document.querySelectorAll('#roomFilterPills .filter-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#roomFilterPills .filter-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeRoomFilter = btn.getAttribute('data-room-filter');
+                applyFilters();
+            });
+        });
+
+        // Filter Reservations Ledger Rows
+        let activeBookingFilter = 'ALL';
+        document.querySelectorAll('#bookingFilterPills .filter-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#bookingFilterPills .filter-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeBookingFilter = btn.getAttribute('data-booking-filter');
+                applyFilters();
+            });
+        });
+
+        // Synced Search Inputs
+        const globalSearch = document.getElementById('globalSearchInput');
+        const ledgerSearch = document.getElementById('ledgerSearchInput');
+
+        globalSearch.addEventListener('input', (e) => {
+            ledgerSearch.value = e.target.value;
+            applyFilters();
+        });
+
+        ledgerSearch.addEventListener('input', (e) => {
+            globalSearch.value = e.target.value;
+            applyFilters();
+        });
+
+        function applyFilters() {
+            const query = (ledgerSearch.value || '').toLowerCase().trim();
+
+            // Filter Rooms
+            document.querySelectorAll('#roomsGrid .room-card').forEach(card => {
+                const status = card.getAttribute('data-status');
+                const text = (card.getAttribute('data-search') || '').toLowerCase();
+                const matchesStatus = (activeRoomFilter === 'ALL' || status === activeRoomFilter);
+                const matchesQuery = (!query || text.includes(query));
+                card.style.display = (matchesStatus && matchesQuery) ? 'flex' : 'none';
+            });
+
+            // Filter Bookings
+            document.querySelectorAll('#bookingsTable tbody tr[data-booking-status]').forEach(row => {
+                const status = row.getAttribute('data-booking-status');
+                const text = (row.getAttribute('data-search') || '').toLowerCase();
+                const matchesStatus = (activeBookingFilter === 'ALL' || status === activeBookingFilter);
+                const matchesQuery = (!query || text.includes(query));
+                row.style.display = (matchesStatus && matchesQuery) ? '' : 'none';
+            });
+        }
+    </script>
+
+</body>
+
+</html>
